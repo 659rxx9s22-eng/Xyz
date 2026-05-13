@@ -138,17 +138,25 @@
             } catch (e) { alert(e.message); }
         }
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('nav').classList.remove('hidden');
-                document.getElementById('dashboard-section').classList.remove('hidden');
-                loadData(user);
-                if (user.email === ADMIN_EMAIL) loadAdmin();
-            } else {
-                location.reload();
-            }
-        });
+auth.onAuthStateChanged(user => {
+    const authSec = document.getElementById('auth-section');
+    const navSec = document.getElementById('nav');
+    const dashSec = document.getElementById('dashboard-section');
+
+    if (user) {
+        authSec.classList.add('hidden');
+        if(navSec) navSec.classList.remove('hidden');
+        if(dashSec) dashSec.classList.remove('hidden');
+        loadData(user);
+        if (user.email === ADMIN_EMAIL) {
+            loadAdmin();
+        }
+    } else {
+        authSec.classList.remove('hidden');
+        if(navSec) navSec.classList.add('hidden');
+        if(dashSec) dashSec.classList.add('hidden');
+    }
+});
 
         function loadData(user) {
             db.ref('users/' + user.uid).on('value', snap => {
